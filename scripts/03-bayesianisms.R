@@ -41,6 +41,7 @@ stan_data_list <- purrr::map(
 plan(tweak(multisession, workers = 3))
 
 # Fit models and add the draws to the simulation data frame
+# Takes about an hour to run on my windows desktop, but YYMV
 sim_draws <- future_map(
     .x = stan_data_list,
     .f = ~ bayes_models(
@@ -63,6 +64,9 @@ plan(sequential)
 
 # Append the estimates to a single data frame
 draws <- rbindlist(sim_draws, idcol = "dataset_id")
+
+# Check the error rate
+draws[, .(error_rate = mean(treat_prob < 0.05))]
 
 # Write the estimates to a CSV file
 fwrite(draws, "data/aa_bayesian_estimates.csv")

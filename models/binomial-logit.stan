@@ -55,6 +55,18 @@ generated quantities {
     // Probabilitiy Under Y(1) and Y(0)
     vector[D] theta = to_vector(y_rep) ./ to_vector(T);
 
+    /* One could gripe here that this isn't a proper posterior probability calculation
+       and may be more appropriately called a posterior predictive probability or 
+       more commonly "probability of best," but it illustrates the idea and since 
+       proper posterior probabilities require bridge sampling, they're a pain to 
+       calculate (and AFAIK, {bridgesampling} doesn't support models fit using cmdstanr). 
+
+       An alternative approach would be to calculate the log likelihood and use 
+       LOO to produce stacking or pseudo-BMA weights then calculate probabilities 
+       based on importance sampling weights, but again, this is a pain to do when 
+       you're fitting the model 3,000 times.
+    */
+
     // Posterior Predictive Probability
     simplex[D] post_prob;
     {
@@ -65,7 +77,4 @@ generated quantities {
         // Uniform in the Case of Ties
         post_prob = post_prob / sum(post_prob);
     }
-
-    // Posterior Predictive Probability, Alternative
-    vector[D] post_prob_alt = dirichlet_rng(to_vector(y_rep));
 }

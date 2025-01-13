@@ -67,7 +67,10 @@ bayes_models <- function(stan_model,
   # Set the initial number of draws to 0
   min_draws <- 0
   
-  # Repeat the run if any of the chains stop unexpectedly
+  # We need a while loop here because sometimes one of the chains will fail
+  # unexpectedly, so we have to re-run the model. It's not clear why this happens 
+  # and it only seems to be an issue when running models that finish quickly in 
+  # parallel.
   while (min_draws < (sampling * chains)) {
     
     # Fit the Stan Model
@@ -87,14 +90,12 @@ bayes_models <- function(stan_model,
   }
   
   # Extract the posterior draws
-  draws <- fit$draws(c("post_prob", "post_prob_alt"), format = "draws_df")
+  draws <- fit$draws(c("post_prob"), format = "draws_df")
 
   # Store the probabilities
   estimates <- data.table(
       control_prob = mean(draws$`post_prob[1]`),
-      treat_prob = mean(draws$`post_prob[2]`),
-      control_prob_alt = mean(draws$`post_prob_alt[1]`),
-      treat_prob_alt = mean(draws$`post_prob_alt[2]`)
+      treat_prob = mean(draws$`post_prob[2]`)
   )
   
   # Return the data frame of draws
