@@ -47,3 +47,6 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Additional files to ignore
+models/binomial-logit.exe
