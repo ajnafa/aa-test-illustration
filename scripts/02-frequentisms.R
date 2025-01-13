@@ -26,6 +26,6 @@ sim_estimates <- future_map(
 out <- rbindlist(sim_estimates, idcol = "dataset_id")
 
 # Write the data to a CSV file
-fwrite(out, "data/aa_frequentist_estimates.csv")
+fwrite(out, "output/aa_frequentist_estimates.csv")
 
 
