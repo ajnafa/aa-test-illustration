@@ -67,6 +67,8 @@ draws <- rbindlist(sim_draws, idcol = "dataset_id")
 
 # Check the error rate
 draws[, .(error_rate = mean(treat_prob < 0.05))]
+#   error_rate
+#1: 0.01933333
 
 # Write the estimates to a CSV file
-fwrite(draws, "data/aa_bayesian_estimates.csv")
+fwrite(draws, "output/aa_bayesian_estimates.csv")
